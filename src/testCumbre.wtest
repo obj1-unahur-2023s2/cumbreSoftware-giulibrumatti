@@ -1,0 +1,20 @@
+import participantes.*
+import paises.*
+import conocimientos.*
+import cumbre.*
+
+describe "Test cumnbre"{
+	const coreaDelSur = new Pais()
+	const coreaDelNorte = new Pais()
+	
+	method iniciar(){
+		coreaDelSur.registrarConflictoCon(coreaDelNorte)
+		cumbre.agregarPaisesAuspiciantes(coreaDelNorte)
+	}
+	
+	
+	test "Corea del Sur es conflictivo para la cumbre por su problema con Corea del Norte que es auspiciante"{
+		self.iniciar()
+		assert.that(cumbre.paisEsConflictivo(coreaDelSur))
+	}
+}

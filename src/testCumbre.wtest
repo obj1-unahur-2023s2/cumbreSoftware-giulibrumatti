@@ -3,18 +3,159 @@ import paises.*
 import conocimientos.*
 import cumbre.*
 
-describe "Test cumnbre"{
+describe "Test paises conflicto"{
 	const coreaDelSur = new Pais()
 	const coreaDelNorte = new Pais()
-	
+	const argentina = new Pais()
+	const colombia = new Pais()
+
 	method iniciar(){
 		coreaDelSur.registrarConflictoCon(coreaDelNorte)
-		cumbre.agregarPaisesAuspiciantes(coreaDelNorte)
+		cumbre.agregarPaisAuspiciante(coreaDelNorte)
+		cumbre.agregarPaisAuspiciante(argentina)
+		cumbre.agregarPaisAuspiciante(colombia)
 	}
 	
 	
 	test "Corea del Sur es conflictivo para la cumbre por su problema con Corea del Norte que es auspiciante"{
 		self.iniciar()
-		assert.that(cumbre.paisEsConflictivo(coreaDelSur))
+		assert.that(cumbre.tieneConflictoCon(coreaDelSur))
 	}
 }
+
+describe "Test con 3 participantes"{
+	const argentina = new Pais()
+	const brasil = new Pais()
+	const coreaDelNorte = new Pais()
+	const colombia = new Pais()
+	const juana = new Programador(pais = argentina , conocimientos = #{programacionBasica, css, html}, commits=600 )
+	const lucia = new Programador(pais = brasil , conocimientos = #{programacionBasica, basesDeDatos}, commits=800)
+	const mariana = new Especialista(pais = argentina, conocimientos = #{programacionBasica, instalacionLinux, objetos, disenioConObjetos},commits=200)
+	method iniciar(){
+		cumbre.agregarParticipantes([juana, lucia, mariana])
+		cumbre.agregarPaisAuspiciante(coreaDelNorte)
+		cumbre.agregarPaisAuspiciante(argentina)
+		cumbre.agregarPaisAuspiciante(colombia)
+	}
+	
+	test "paises con participante Argentina y Brasil"{
+		self.iniciar()
+		assert.equals(#{argentina, brasil}, cumbre.conjuntoPaisesParticipantes())		
+	}
+	
+	test "pais con mas participante argentina"{
+		self.iniciar()
+		assert.equals(argentina, cumbre.paisConMasParticipantes())
+	}
+	
+	test "cantidad de participantes de argentina es 2"{
+		self.iniciar()
+		assert.equals(2, cumbre.cantidadParticipantesDeUnPais(argentina))
+	}
+	
+	test "la cumbre es relevante"{
+		self.iniciar()
+		assert.that(cumbre.esRelevante())
+	}
+	
+	test "es extranjera Lucia"{
+		self.iniciar()
+		assert.equals(#{lucia}, cumbre.participantesExtranjeros())
+	}
+}
+
+describe "Teste con 4 participantes"{
+	const argentina = new Pais()
+	const brasil = new Pais()
+	const colombia = new Pais()
+	const coreaDelNorte = new Pais()
+	const juana = new Programador(pais = argentina , conocimientos = #{programacionBasica, css, html}, commits=600 )
+	const lucia = new Programador(pais = brasil , conocimientos = #{programacionBasica, basesDeDatos}, commits=800)
+	const mariana = new Especialista(pais = argentina, conocimientos = #{programacionBasica, instalacionLinux, objetos, disenioConObjetos},commits=200)
+	const susana = new Especialista(pais = colombia, conocimientos = #{programacionBasica, objetos},commits=1500)
+
+	method iniciar(){
+		cumbre.agregarParticipantes([juana, lucia, mariana, susana])
+		cumbre.agregarPaisAuspiciante(coreaDelNorte)
+		cumbre.agregarPaisAuspiciante(argentina)
+		cumbre.agregarPaisAuspiciante(colombia)
+	}
+	
+		test "paises con participante Argentina, Brasil y Colombia"{
+		self.iniciar()
+		assert.equals(#{argentina, brasil, colombia}, cumbre.conjuntoPaisesParticipantes())		
+	}
+	
+	test "pais con mas participante argentina2"{
+		self.iniciar()
+		assert.equals(argentina, cumbre.paisConMasParticipantes())
+	}
+	
+	test "la cumbre no es relevante"{
+		self.iniciar()
+		assert.notThat(cumbre.esRelevante())
+	}
+}
+
+describe "Test condiciones de ingreso"{
+	const argentina = new Pais()
+	const brasil = new Pais()
+	const colombia = new Pais()
+	const coreaDelNorte = new Pais()
+	const coreaDelSur = new Pais()
+	const juana = new Programador(pais = argentina , conocimientos = #{programacionBasica, css, html}, commits=600 )
+	const lucia = new Programador(pais = brasil , conocimientos = #{programacionBasica, basesDeDatos}, commits=800)
+	const mariana = new Especialista(pais = argentina, conocimientos = #{programacionBasica, instalacionLinux, objetos, disenioConObjetos},commits=200)
+	const susana = new Especialista(pais = colombia, conocimientos = #{programacionBasica, objetos},commits=1500)
+	const lucas = new Especialista(pais = coreaDelSur, conocimientos = #{programacionBasica, objetos},commits=1500)
+	
+	method inicial(){
+		cumbre.agregarPaisAuspiciante(coreaDelNorte)
+		cumbre.agregarPaisAuspiciante(argentina)
+		cumbre.agregarPaisAuspiciante(colombia)
+		coreaDelSur.registrarConflictoCon(coreaDelNorte)
+		coreaDelNorte.registrarConflictoCon(coreaDelSur)
+	}
+	
+	test "juana"{
+		assert.that(juana.requisitos())
+	}
+	
+	test "lucia"{
+		assert.that(lucia.requisitos())
+	}
+	
+	test "mariana"{
+		assert.that(mariana.requisitos())
+	}
+	
+	test "susana"{
+		assert.that(susana.requisitos())
+	}
+	
+	test "puede ingresar juana"{
+		self.inicial()
+		assert.that(cumbre.puedeIngresar(juana))
+	}
+	
+	test "puede ingresar mariana"{
+		self.inicial()
+		assert.that(cumbre.puedeIngresar(mariana))
+	}
+	test "puede ingresar lucia"{
+		self.inicial()
+		assert.that(cumbre.puedeIngresar(lucia))
+	}
+	test "puede ingresar susana"{
+		self.inicial()
+		assert.that(cumbre.puedeIngresar(susana))
+	}
+	
+	test "no puede ingresar lucas"{
+		self.inicial()
+		assert.notThat(cumbre.puedeIngresar(lucas))
+	}
+}
+
+
+

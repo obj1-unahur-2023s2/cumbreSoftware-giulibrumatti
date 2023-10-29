@@ -5,6 +5,4 @@ class Pais {
 		paisesConConflicto.add(nuevoPais)
 	}
 	
-	method estaEnConflicto(nuevoPais) = paisesConConflicto.contains(nuevoPais)
-	
 }
